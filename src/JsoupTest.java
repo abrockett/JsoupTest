@@ -50,19 +50,25 @@ public class JsoupTest {
 
 		String unsafe = "<img src=\"%-->2F%3E<script>alert(1);</script> javascript:alert('XSS');\" /><img src=\"%-- >2F%3E<script>alert(1);</script> javascript:alert('XSS');\" />";
 		String clever = "\"><<script><</script>scr</script>ipt>alert('alert')<<script></script>/<script><</script> scr</script>ipt>";
-		String encoded = "&lt; &amp; &quot; &gt; < & ' \" >";
+		String entities = "&lt; &amp; &quot; &gt; < & ' \" >";
 		String alert = "<script>alert('YOU GOT XSSD')</script>";
 		String jsInImg = "<img src=\"javascript:alert('foo');\"/>";
 		String msWordTable = "<table style=\"BORDER-COLLAPSE: collapse\"> <tbody> <tr> <td style=\"BORDER-BOTTOM: windowtext 1pt solid; BORDER-LEFT: windowtext 1pt solid; PADDING-BOTTOM: 0in; BACKGROUND-COLOR: transparent; PADDING-LEFT: 5.4pt; WIDTH: 159.6pt; PADDING-RIGHT: 5.4pt; BORDER-TOP: windowtext 1pt solid; BORDER-RIGHT: windowtext 1pt solid; PADDING-TOP: 0in; mso-border-alt: solid windowtext .5pt\" width=\"213\"> <p style=\"LINE-HEIGHT: normal; MARGIN: 0in 0in 0pt\"><font face=\"Calibri\">Row 1 col 1</font></p> </td> <td style=\"BORDER-BOTTOM: windowtext 1pt solid; BORDER-LEFT: #d4d0c8; PADDING-BOTTOM: 0in; BACKGROUND-COLOR: transparent; PADDING-LEFT: 5.4pt; WIDTH: 159.6pt; PADDING-RIGHT: 5.4pt; BORDER-TOP: windowtext 1pt solid; BORDER-RIGHT: windowtext 1pt solid; PADDING-TOP: 0in; mso-border-alt: solid windowtext .5pt; mso-border-left-alt: solid windowtext .5pt\" width=\"213\"> <p style=\"LINE-HEIGHT: normal; MARGIN: 0in 0in 0pt\"><font face=\"Calibri\">Row 1 col 2</font></p> </td> <td style=\"BORDER-BOTTOM: windowtext 1pt solid; BORDER-LEFT: #d4d0c8; PADDING-BOTTOM: 0in; BACKGROUND-COLOR: transparent; PADDING-LEFT: 5.4pt; WIDTH: 159.6pt; PADDING-RIGHT: 5.4pt; BORDER-TOP: windowtext 1pt solid; BORDER-RIGHT: windowtext 1pt solid; PADDING-TOP: 0in; mso-border-alt: solid windowtext .5pt; mso-border-left-alt: solid windowtext .5pt\" width=\"213\"> <p style=\"LINE-HEIGHT: normal; MARGIN: 0in 0in 0pt\"><font face=\"Calibri\">Row 1 col 3</font></p> </td> </tr> <tr> <td style=\"BORDER-BOTTOM: windowtext 1pt solid; BORDER-LEFT: windowtext 1pt solid; PADDING-BOTTOM: 0in; BACKGROUND-COLOR: transparent; PADDING-LEFT: 5.4pt; WIDTH: 159.6pt; PADDING-RIGHT: 5.4pt; BORDER-TOP: #d4d0c8; BORDER-RIGHT: windowtext 1pt solid; PADDING-TOP: 0in; mso-border-alt: solid windowtext .5pt; mso-border-top-alt: solid windowtext .5pt\" width=\"213\"> <p style=\"LINE-HEIGHT: normal; MARGIN: 0in 0in 0pt\"><font face=\"Calibri\">Row 2 col 1</font></p> </td> <td style=\"BORDER-BOTTOM: windowtext 1pt solid; BORDER-LEFT: #d4d0c8; PADDING-BOTTOM: 0in; BACKGROUND-COLOR: transparent; PADDING-LEFT: 5.4pt; WIDTH: 159.6pt; PADDING-RIGHT: 5.4pt; BORDER-TOP: #d4d0c8; BORDER-RIGHT: windowtext 1pt solid; PADDING-TOP: 0in; mso-border-alt: solid windowtext .5pt; mso-border-left-alt: solid windowtext .5pt; mso-border-top-alt: solid windowtext .5pt\" width=\"213\"> <p style=\"LINE-HEIGHT: normal; MARGIN: 0in 0in 0pt\"><font face=\"Calibri\">Row 2 col 2</font></p> </td> <td style=\"BORDER-BOTTOM: windowtext 1pt solid; BORDER-LEFT: #d4d0c8; PADDING-BOTTOM: 0in; BACKGROUND-COLOR: transparent; PADDING-LEFT: 5.4pt; WIDTH: 159.6pt; PADDING-RIGHT: 5.4pt; BORDER-TOP: #d4d0c8; BORDER-RIGHT: windowtext 1pt solid; PADDING-TOP: 0in; mso-border-alt: solid windowtext .5pt; mso-border-left-alt: solid windowtext .5pt; mso-border-top-alt: solid windowtext .5pt\" width=\"213\"> <p style=\"LINE-HEIGHT: normal; MARGIN: 0in 0in 0pt\"><font face=\"Calibri\">Row 2 col 3</font></p> </td> </tr> </tbody> </table>";
-		String simpleMarkup = "<b>Story name</b>";
+		String simpleMarkup = "<b>This is a bold &lt; string</b><table style=\"BORDER-COLLAPSE: collapse\"></table>";
+		String wsapiQuery = "query=(Name%20%3D%20%22abc%22)";
+		String urlEncodedEntities = "%26lt%3B%20%26amp%3B%20%26quot%3B%20%26gt%3B%20%3C%20%26%20%27%20%5C%22%20%3E";
+		String urlEncodedClever = "%5C%22%3E%3C%3Cscript%3E%3C%3C%2Fscript%3Escr%3C%2Fscript%3Eipt%3Ealert(%27alert%27)%3C%3Cscript%3E%3C%2Fscript%3E%2F%3Cscript%3E%3C%3C%2Fscript%3E%20scr%3C%2Fscript%3Eipt%3E";
 
 		test(unsafe);
 		test(clever);
-		test(encoded);
+		test(entities);
 		test(alert);
 		test(jsInImg);
 		test(msWordTable);
 		test(simpleMarkup);
+		test(wsapiQuery);
+		test(urlEncodedEntities);
+		test(urlEncodedClever);
 	}
 
 	private static void test(String input) {
@@ -102,7 +108,8 @@ public class JsoupTest {
 		Document doc = Jsoup.parse(output);
 		// doc.outputSettings().escapeMode(EscapeMode.xhtml);
 		// doc.outputSettings().prettyPrint(false);
-		 return StringEscapeUtils.unescapeHtml4(doc.body().html());
+//		 return StringEscapeUtils.unescapeHtml4(doc.body().html());
+		return output;
 //		return doc.body().html();
 	}
 
